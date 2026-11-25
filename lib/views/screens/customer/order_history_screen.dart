@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../models/order_model.dart';
 import '../../../providers/order_provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../widgets/freshfarm_image.dart';
 import '../../widgets/status_badge.dart';
+import 'order_tracking_screen.dart';
+import 'supplier_chat_screen.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({super.key});
@@ -13,7 +17,8 @@ class OrderHistoryScreen extends StatefulWidget {
   State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
 
-class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTickerProviderStateMixin {
+class _OrderHistoryScreenState extends State<OrderHistoryScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -42,7 +47,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
           indicatorWeight: 3,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
           tabs: const [
             Tab(text: 'Tất cả'),
             Tab(text: 'Chờ xác nhận'),
@@ -58,7 +66,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
           _buildOrderList(orderProv.getOrdersByStatus(OrderStatus.pending)),
           _buildOrderList(
             orderProv.orders
-                .where((o) => o.status == OrderStatus.packing || o.status == OrderStatus.shipping)
+                .where(
+                  (o) =>
+                      o.status == OrderStatus.packing ||
+                      o.status == OrderStatus.shipping,
+                )
                 .toList(),
           ),
           _buildOrderList(orderProv.getOrdersByStatus(OrderStatus.delivered)),
@@ -73,7 +85,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inventory_2_outlined, size: 60, color: Colors.grey.shade400),
+            Icon(
+              Icons.inventory_2_outlined,
+              size: 60,
+              color: Colors.grey.shade400,
+            ),
             const SizedBox(height: 12),
             const Text(
               'Chưa có đơn hàng nào trong mục này',
@@ -114,7 +130,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.receipt, size: 16, color: AppColors.primary),
+                    const Icon(
+                      Icons.receipt,
+                      size: 16,
+                      color: AppColors.primary,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       order.id,
@@ -137,50 +157,56 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
             const Divider(height: 16, color: AppColors.divider),
 
             // Items List
-            ...order.items.map((item) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Image.network(
-                          item.imageUrl,
-                          width: 42,
-                          height: 42,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            width: 42,
-                            height: 42,
-                            color: AppColors.surfaceVariant,
-                            child: const Icon(Icons.eco, size: 20, color: AppColors.primary),
+            ...order.items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: FreshFarmImage(
+                        imageUrl: item.imageUrl,
+                        productId: item.productId,
+                        width: 46,
+                        height: 46,
+                        fallbackIconSize: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.productName,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.productName,
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          Text(
+                            '${CurrencyFormatter.format(item.price)} x ${item.quantity} ${item.unit}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
                             ),
-                            Text(
-                              '${CurrencyFormatter.format(item.price)} x ${item.quantity} ${item.unit}',
-                              style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        CurrencyFormatter.format(item.subtotal),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      CurrencyFormatter.format(item.subtotal),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             const Divider(height: 16, color: AppColors.divider),
 
@@ -193,16 +219,63 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.local_shipping, size: 14, color: AppColors.primary),
+                  const Icon(
+                    Icons.local_shipping,
+                    size: 14,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       '${order.deliveryPartner} • Vận đơn: ${order.deliveryTrackingCode}',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
               ),
+            ),
+
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OrderTrackingScreen(order: order),
+                      ),
+                    ),
+                    icon: const Icon(Icons.map_outlined, size: 16),
+                    label: const Text(
+                      'Theo dõi trên bản đồ',
+                      style: TextStyle(fontSize: 11),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SupplierChatScreen(order: order),
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 16,
+                    ),
+                    label: const Text(
+                      'Chat nhà cung cấp',
+                      style: TextStyle(fontSize: 11),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             const SizedBox(height: 10),
@@ -216,16 +289,23 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
                   children: [
                     Text(
                       'Phương thức: ${order.paymentMethod == PaymentMethod.vietqr ? "VietQR Napas 247" : "COD"}',
-                      style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textMuted,
+                      ),
                     ),
                     Row(
                       children: [
                         Text(
-                          order.isPaid ? '• Đã thanh toán' : '• Chưa thanh toán',
+                          order.isPaid
+                              ? '• Đã thanh toán'
+                              : '• Chưa thanh toán',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: order.isPaid ? AppColors.success : AppColors.warning,
+                            color: order.isPaid
+                                ? AppColors.success
+                                : AppColors.warning,
                           ),
                         ),
                       ],
@@ -235,7 +315,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text('Tổng tiền:', style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                    const Text(
+                      'Tổng tiền:',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
                     Text(
                       CurrencyFormatter.format(order.finalAmount),
                       style: const TextStyle(
@@ -259,7 +345,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
                       context: context,
                       builder: (ctx) => AlertDialog(
                         title: const Text('Hủy đơn hàng'),
-                        content: Text('Bạn có chắc muốn hủy đơn hàng ${order.id}?'),
+                        content: Text(
+                          'Bạn có chắc muốn hủy đơn hàng ${order.id}?',
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(ctx).pop(),
@@ -270,15 +358,24 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
                               orderProv.cancelOrder(order.id);
                               Navigator.of(ctx).pop();
                             },
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.error,
+                            ),
                             child: const Text('Xác nhận hủy'),
                           ),
                         ],
                       ),
                     );
                   },
-                  icon: const Icon(Icons.cancel, size: 14, color: AppColors.error),
-                  label: const Text('Hủy đơn hàng này', style: TextStyle(color: AppColors.error, fontSize: 12)),
+                  icon: const Icon(
+                    Icons.cancel,
+                    size: 14,
+                    color: AppColors.error,
+                  ),
+                  label: const Text(
+                    'Hủy đơn hàng này',
+                    style: TextStyle(color: AppColors.error, fontSize: 12),
+                  ),
                 ),
               ),
             ],
@@ -288,4 +385,3 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
     );
   }
 }
-

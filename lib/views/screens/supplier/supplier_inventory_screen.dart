@@ -5,6 +5,7 @@ import '../../../providers/product_provider.dart';
 import '../../../providers/order_provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../widgets/freshfarm_image.dart';
 import '../../widgets/role_selector_bar.dart';
 import '../../widgets/status_badge.dart';
 
@@ -89,17 +90,12 @@ class _SupplierInventoryScreenState extends State<SupplierInventoryScreen> with 
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                p.imageUrl,
+                              child: FreshFarmImage(
+                                imageUrl: p.imageUrl,
+                                productId: p.id,
                                 width: 55,
                                 height: 55,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Container(
-                                  width: 55,
-                                  height: 55,
-                                  color: AppColors.surfaceVariant,
-                                  child: const Icon(Icons.eco, color: AppColors.primary),
-                                ),
+                                fallbackIconSize: 24,
                               ),
                             ),
                             const SizedBox(width: 12),

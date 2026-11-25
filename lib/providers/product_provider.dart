@@ -4,18 +4,54 @@ import '../services/mock_data_service.dart';
 import '../services/storage_service.dart';
 import '../services/firebase_service.dart';
 
+enum ProductSortOption {
+  featured,
+  priceAsc,
+  priceDesc,
+  ratingDesc,
+  discountDesc,
+}
+
+extension ProductSortOptionExtension on ProductSortOption {
+  String get label {
+    switch (this) {
+      case ProductSortOption.featured:
+        return 'Nổi bật nhất';
+      case ProductSortOption.priceAsc:
+        return 'Giá: Thấp → Cao';
+      case ProductSortOption.priceDesc:
+        return 'Giá: Cao → Thấp';
+      case ProductSortOption.ratingDesc:
+        return 'Đánh giá cao';
+      case ProductSortOption.discountDesc:
+        return 'Ưu đãi sâu';
+    }
+  }
+}
+
 class ProductProvider extends ChangeNotifier {
   List<ProductModel> _products = [];
   String _selectedCategory = 'Tất cả';
   String _selectedCertification = 'Tất cả';
+  String? _selectedFarmId;
   String _searchQuery = '';
+  ProductSortOption _sortOption = ProductSortOption.featured;
   bool _isLoading = false;
 
   List<ProductModel> get products => _products;
   String get selectedCategory => _selectedCategory;
   String get selectedCertification => _selectedCertification;
+  String? get selectedFarmId => _selectedFarmId;
   String get searchQuery => _searchQuery;
+  ProductSortOption get sortOption => _sortOption;
   bool get isLoading => _isLoading;
+
+  bool get hasActiveFilters =>
+      _selectedCategory != 'Tất cả' ||
+      _selectedCertification != 'Tất cả' ||
+      _selectedFarmId != null ||
+      _searchQuery.isNotEmpty ||
+      _sortOption != ProductSortOption.featured;
 
   ProductProvider() {
     loadProducts();
@@ -58,14 +94,49 @@ class ProductProvider extends ChangeNotifier {
   }
 
   List<ProductModel> get filteredProducts {
-    return _products.where((p) {
-      final matchCategory = _selectedCategory == 'Tất cả' || p.category == _selectedCategory;
-      final matchCert = _selectedCertification == 'Tất cả' || p.certification == _selectedCertification;
-      final matchQuery = _searchQuery.isEmpty ||
-          p.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          p.region.toLowerCase().contains(_searchQuery.toLowerCase());
-      return matchCategory && matchCert && matchQuery;
+    final list = _products.where((p) {
+      final matchCategory =
+          _selectedCategory == 'Tất cả' || p.category == _selectedCategory;
+      final matchCert =
+          _selectedCertification == 'Tất cả' ||
+          p.certification == _selectedCertification;
+      final matchFarm =
+          _selectedFarmId == null || p.farmId == _selectedFarmId;
+      final q = _searchQuery.trim().toLowerCase();
+      final matchQuery =
+          q.isEmpty ||
+          p.name.toLowerCase().contains(q) ||
+          p.region.toLowerCase().contains(q) ||
+          p.farmName.toLowerCase().contains(q) ||
+          p.certification.toLowerCase().contains(q);
+      return matchCategory && matchCert && matchFarm && matchQuery;
     }).toList();
+
+    switch (_sortOption) {
+      case ProductSortOption.featured:
+        list.sort((a, b) {
+          if (a.isFeatured != b.isFeatured) return a.isFeatured ? -1 : 1;
+          return b.reviewCount.compareTo(a.reviewCount);
+        });
+        break;
+      case ProductSortOption.priceAsc:
+        list.sort((a, b) => a.price.compareTo(b.price));
+        break;
+      case ProductSortOption.priceDesc:
+        list.sort((a, b) => b.price.compareTo(a.price));
+        break;
+      case ProductSortOption.ratingDesc:
+        list.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case ProductSortOption.discountDesc:
+        double discountRate(ProductModel p) {
+          if (p.originalPrice == null || p.originalPrice! <= p.price) return 0;
+          return (p.originalPrice! - p.price) / p.originalPrice!;
+        }
+        list.sort((a, b) => discountRate(b).compareTo(discountRate(a)));
+        break;
+    }
+    return list;
   }
 
   List<ProductModel> get featuredProducts {
@@ -82,8 +153,27 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFarmFilter(String? farmId) {
+    _selectedFarmId = _selectedFarmId == farmId ? null : farmId;
+    notifyListeners();
+  }
+
+  void setSortOption(ProductSortOption option) {
+    _sortOption = option;
+    notifyListeners();
+  }
+
   void setSearchQuery(String query) {
     _searchQuery = query;
+    notifyListeners();
+  }
+
+  void resetFilters() {
+    _selectedCategory = 'Tất cả';
+    _selectedCertification = 'Tất cả';
+    _selectedFarmId = null;
+    _searchQuery = '';
+    _sortOption = ProductSortOption.featured;
     notifyListeners();
   }
 

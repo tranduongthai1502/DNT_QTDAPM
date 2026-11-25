@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+
 import '../../../models/evm_metrics_model.dart';
 import '../../../models/order_model.dart';
 import '../../../providers/order_provider.dart';
@@ -18,7 +19,8 @@ class AdminDashboardScreen extends StatefulWidget {
   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
 }
 
-class _AdminDashboardScreenState extends State<AdminDashboardScreen> with SingleTickerProviderStateMixin {
+class _AdminDashboardScreenState extends State<AdminDashboardScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final EvmMetricsModel _evmMetrics = EvmMetricsModel.getDefaultMetrics();
 
@@ -50,8 +52,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
           unselectedLabelColor: Colors.white70,
           labelStyle: const TextStyle(fontWeight: FontWeight.bold),
           tabs: const [
-            Tab(icon: Icon(Icons.analytics_outlined, size: 18), text: 'Vận hành TMĐT'),
-            Tab(icon: Icon(Icons.assessment_outlined, size: 18), text: 'Quản trị dự án EVM'),
+            Tab(
+              icon: Icon(Icons.analytics_outlined, size: 18),
+              text: 'Vận hành TMĐT',
+            ),
+            Tab(
+              icon: Icon(Icons.assessment_outlined, size: 18),
+              text: 'Quản trị dự án EVM',
+            ),
           ],
         ),
       ),
@@ -123,32 +131,50 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                          border: Border.all(
+                            color: AppColors.primary.withOpacity(0.3),
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.cloud_upload_outlined, color: AppColors.primary, size: 20),
+                                const Icon(
+                                  Icons.cloud_upload_outlined,
+                                  color: AppColors.primary,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 const Text(
                                   'Đồng bộ dữ liệu Cloud Firestore',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
                                 ),
                                 const Spacer(),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: FirebaseService.isInitialized ? AppColors.surfaceVariant : Colors.orange.shade50,
+                                    color: FirebaseService.isInitialized
+                                        ? AppColors.surfaceVariant
+                                        : Colors.orange.shade50,
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    FirebaseService.isInitialized ? 'Cloud Connected' : 'Offline Mode',
+                                    FirebaseService.isInitialized
+                                        ? 'Cloud Connected'
+                                        : 'Offline Mode',
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
-                                      color: FirebaseService.isInitialized ? AppColors.primaryDark : Colors.orange.shade800,
+                                      color: FirebaseService.isInitialized
+                                          ? AppColors.primaryDark
+                                          : Colors.orange.shade800,
                                     ),
                                   ),
                                 ),
@@ -156,34 +182,46 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                             ),
                             const SizedBox(height: 8),
                             const Text(
-                              'Nạp toàn bộ nông sản VietGAP, lô hàng truy xuất QR, trang trại và đơn hàng lên Firebase Firestore thật.',
-                              style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                              'Nạp sản phẩm, hình ảnh vào Firebase Storage; đồng thời lưu lô hàng, trang trại và đơn hàng vào Cloud Firestore.',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             const SizedBox(height: 10),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: () async {
-                                  final messenger = ScaffoldMessenger.of(context);
-                                  final success = await FirebaseService.seedAllDataToFirestore();
+                                  final messenger = ScaffoldMessenger.of(
+                                    context,
+                                  );
+                                  final success =
+                                      await FirebaseService.seedAllDataToFirestore();
                                   if (success) {
                                     messenger.showSnackBar(
                                       const SnackBar(
-                                        content: Text('Đã nạp toàn bộ dữ liệu lên Cloud Firestore thành công!'),
+                                        content: Text(
+                                          'Đã nạp dữ liệu và hình ảnh lên Firebase thành công!',
+                                        ),
                                         backgroundColor: AppColors.primary,
                                       ),
                                     );
                                   } else {
                                     messenger.showSnackBar(
                                       const SnackBar(
-                                        content: Text('Chưa kết nối Firebase! Hãy chạy flutterfire configure để liên kết project.'),
+                                        content: Text(
+                                          'Chưa kết nối Firebase! Hãy chạy flutterfire configure để liên kết project.',
+                                        ),
                                         backgroundColor: AppColors.warning,
                                       ),
                                     );
                                   }
                                 },
                                 icon: const Icon(Icons.sync, size: 16),
-                                label: const Text('Nạp dữ liệu lên Cloud Firestore (Seed Data)'),
+                                label: const Text(
+                                  'Nạp dữ liệu lên Cloud Firestore (Seed Data)',
+                                ),
                                 style: ElevatedButton.styleFrom(
                                   visualDensity: VisualDensity.compact,
                                   backgroundColor: AppColors.primaryDark,
@@ -209,7 +247,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                           children: [
                             const Text(
                               'Phân bổ trạng thái đơn hàng',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                             const SizedBox(height: 16),
                             SizedBox(
@@ -218,7 +259,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                                 BarChartData(
                                   alignment: BarChartAlignment.spaceAround,
                                   maxY: 10,
-                                  barTouchData: const BarTouchData(enabled: true),
+                                  barTouchData: const BarTouchData(
+                                    enabled: true,
+                                  ),
                                   titlesData: FlTitlesData(
                                     show: true,
                                     bottomTitles: AxisTitles(
@@ -227,33 +270,99 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                                         getTitlesWidget: (val, meta) {
                                           switch (val.toInt()) {
                                             case 0:
-                                              return const Text('Chờ', style: TextStyle(fontSize: 10));
+                                              return const Text(
+                                                'Chờ',
+                                                style: TextStyle(fontSize: 10),
+                                              );
                                             case 1:
-                                              return const Text('Duyệt', style: TextStyle(fontSize: 10));
+                                              return const Text(
+                                                'Duyệt',
+                                                style: TextStyle(fontSize: 10),
+                                              );
                                             case 2:
-                                              return const Text('Gói', style: TextStyle(fontSize: 10));
+                                              return const Text(
+                                                'Gói',
+                                                style: TextStyle(fontSize: 10),
+                                              );
                                             case 3:
-                                              return const Text('Giao', style: TextStyle(fontSize: 10));
+                                              return const Text(
+                                                'Giao',
+                                                style: TextStyle(fontSize: 10),
+                                              );
                                             case 4:
-                                              return const Text('Xong', style: TextStyle(fontSize: 10));
+                                              return const Text(
+                                                'Xong',
+                                                style: TextStyle(fontSize: 10),
+                                              );
                                             default:
                                               return const SizedBox();
                                           }
                                         },
                                       ),
                                     ),
-                                    leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                    leftTitles: const AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false),
+                                    ),
+                                    topTitles: const AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false),
+                                    ),
+                                    rightTitles: const AxisTitles(
+                                      sideTitles: SideTitles(showTitles: false),
+                                    ),
                                   ),
                                   gridData: const FlGridData(show: false),
                                   borderData: FlBorderData(show: false),
                                   barGroups: [
-                                    _makeBarGroup(0, orderProv.getOrdersByStatus(OrderStatus.pending).length.toDouble(), Colors.amber),
-                                    _makeBarGroup(1, orderProv.getOrdersByStatus(OrderStatus.confirmed).length.toDouble(), Colors.blue),
-                                    _makeBarGroup(2, orderProv.getOrdersByStatus(OrderStatus.packing).length.toDouble(), Colors.purple),
-                                    _makeBarGroup(3, orderProv.getOrdersByStatus(OrderStatus.shipping).length.toDouble(), Colors.cyan),
-                                    _makeBarGroup(4, orderProv.getOrdersByStatus(OrderStatus.delivered).length.toDouble(), Colors.green),
+                                    _makeBarGroup(
+                                      0,
+                                      orderProv
+                                          .getOrdersByStatus(
+                                            OrderStatus.pending,
+                                          )
+                                          .length
+                                          .toDouble(),
+                                      Colors.amber,
+                                    ),
+                                    _makeBarGroup(
+                                      1,
+                                      orderProv
+                                          .getOrdersByStatus(
+                                            OrderStatus.confirmed,
+                                          )
+                                          .length
+                                          .toDouble(),
+                                      Colors.blue,
+                                    ),
+                                    _makeBarGroup(
+                                      2,
+                                      orderProv
+                                          .getOrdersByStatus(
+                                            OrderStatus.packing,
+                                          )
+                                          .length
+                                          .toDouble(),
+                                      Colors.purple,
+                                    ),
+                                    _makeBarGroup(
+                                      3,
+                                      orderProv
+                                          .getOrdersByStatus(
+                                            OrderStatus.shipping,
+                                          )
+                                          .length
+                                          .toDouble(),
+                                      Colors.cyan,
+                                    ),
+                                    _makeBarGroup(
+                                      4,
+                                      orderProv
+                                          .getOrdersByStatus(
+                                            OrderStatus.delivered,
+                                          )
+                                          .length
+                                          .toDouble(),
+                                      Colors.green,
+                                    ),
                                   ],
                                 ),
                               ),
@@ -267,19 +376,34 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                       // Recent Orders Management
                       const Text(
                         'Danh sách đơn hàng toàn hệ thống',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       ...orderProv.orders.map((order) {
                         return Card(
                           margin: const EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 6,
+                            ),
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(order.id, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, fontFamily: 'monospace')),
+                                Text(
+                                  order.id,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
                                 StatusBadge(status: order.status),
                               ],
                             ),
@@ -290,7 +414,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                                 Text('${order.userName} • ${order.userPhone}'),
                                 Text(
                                   'Tổng: ${CurrencyFormatter.format(order.finalAmount)} (${order.paymentMethod == PaymentMethod.vietqr ? "VietQR" : "COD"})',
-                                  style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
                                 ),
                               ],
                             ),
@@ -327,22 +454,39 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                               children: [
                                 const Text(
                                   'BÁO CÁO GIÁ TRỊ THU ĐƯỢC (EVM)',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: const Text('QTDAPM - CHƯƠNG 4', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                                  child: const Text(
+                                    'QTDAPM - CHƯƠNG 4',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 12),
                             const Text(
                               'Đo lường tiến độ và ngân sách theo chuẩn quốc tế Project Plan 365 / MS Project:',
-                              style: TextStyle(color: Colors.white70, fontSize: 11),
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11,
+                              ),
                             ),
                             const SizedBox(height: 12),
                             Row(
@@ -363,7 +507,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                       // EVM Indicators Detail Grid
                       const Text(
                         'Các chỉ số EVM trọng yếu (Chương 4 Báo cáo)',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Container(
@@ -375,19 +522,47 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                         ),
                         child: Column(
                           children: [
-                            _evmRow('Planned Value (PV / BCWS)', '\$2,650.00 USD', 'Giá trị kế hoạch đường cơ sở'),
+                            _evmRow(
+                              'Planned Value (PV / BCWS)',
+                              '\$2,650.00 USD',
+                              'Giá trị kế hoạch đường cơ sở',
+                            ),
                             const Divider(height: 16, color: AppColors.divider),
-                            _evmRow('Earned Value (EV / BCWP)', '\$2,307.20 USD', 'Giá trị thực tế hoàn thành'),
+                            _evmRow(
+                              'Earned Value (EV / BCWP)',
+                              '\$2,307.20 USD',
+                              'Giá trị thực tế hoàn thành',
+                            ),
                             const Divider(height: 16, color: AppColors.divider),
-                            _evmRow('Actual Cost (AC / ACWP)', '\$2,307.20 USD', 'Chi phí thực tế giải ngân'),
+                            _evmRow(
+                              'Actual Cost (AC / ACWP)',
+                              '\$2,307.20 USD',
+                              'Chi phí thực tế giải ngân',
+                            ),
                             const Divider(height: 16, color: AppColors.divider),
-                            _evmRow('Cost Variance (CV = EV - AC)', '\$0.00 USD', 'Không vượt ngân sách'),
+                            _evmRow(
+                              'Cost Variance (CV = EV - AC)',
+                              '\$0.00 USD',
+                              'Không vượt ngân sách',
+                            ),
                             const Divider(height: 16, color: AppColors.divider),
-                            _evmRow('Schedule Variance (SV = EV - PV)', '-\$342.80 USD', 'Đã bù đắp xong qua Flutter'),
+                            _evmRow(
+                              'Schedule Variance (SV = EV - PV)',
+                              '-\$342.80 USD',
+                              'Đã bù đắp xong qua Flutter',
+                            ),
                             const Divider(height: 16, color: AppColors.divider),
-                            _evmRow('Cost Performance Index (CPI)', '1.00', 'Hiệu suất chi phí hoàn hảo'),
+                            _evmRow(
+                              'Cost Performance Index (CPI)',
+                              '1.00',
+                              'Hiệu suất chi phí hoàn hảo',
+                            ),
                             const Divider(height: 16, color: AppColors.divider),
-                            _evmRow('Schedule Performance Index (SPI)', '0.87 → 1.00', 'Hồi phục về chuẩn sau nén tiến độ'),
+                            _evmRow(
+                              'Schedule Performance Index (SPI)',
+                              '0.87 → 1.00',
+                              'Hồi phục về chuẩn sau nén tiến độ',
+                            ),
                           ],
                         ),
                       ),
@@ -397,43 +572,64 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                       // Human Resources & RACI Contribution
                       const Text(
                         'Tỉ lệ đóng góp của 4 thành viên (Chương 5 Báo cáo)',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       ..._evmMetrics.teamMembers.map((member) {
                         return Card(
                           margin: const EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           '${member.name} (${member.studentId})',
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
                                         ),
                                         Text(
                                           member.role,
-                                          style: const TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.w600),
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ],
                                     ),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: AppColors.surfaceVariant,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
                                         'Đóng góp: ${member.contributionPercent.toInt()}%',
-                                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primaryDark),
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primaryDark,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -442,7 +638,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(4),
                                   child: LinearProgressIndicator(
-                                    value: member.completedHours / member.assignedHours,
+                                    value:
+                                        member.completedHours /
+                                        member.assignedHours,
                                     backgroundColor: Colors.grey.shade200,
                                     color: AppColors.primary,
                                     minHeight: 6,
@@ -450,15 +648,22 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                                 ),
                                 const SizedBox(height: 6),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Giờ công: ${member.completedHours}h / ${member.assignedHours}h (${member.progressPercent.toStringAsFixed(1)}%)',
-                                      style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: AppColors.textSecondary,
+                                      ),
                                     ),
                                     Text(
                                       'Định mức: \$${member.hourlyRate.toStringAsFixed(2)}/h',
-                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -476,18 +681,28 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                         decoration: BoxDecoration(
                           color: AppColors.surfaceVariant,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                          border: Border.all(
+                            color: AppColors.primary.withOpacity(0.3),
+                          ),
                         ),
                         child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.lightbulb_outline, color: AppColors.primary, size: 20),
+                                Icon(
+                                  Icons.lightbulb_outline,
+                                  color: AppColors.primary,
+                                  size: 20,
+                                ),
                                 SizedBox(width: 8),
                                 Text(
                                   'Quyết định kiến trúc & Khắc phục sự cố:',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.primaryDark),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    color: AppColors.primaryDark,
+                                  ),
                                 ),
                               ],
                             ),
@@ -495,7 +710,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                             Text(
                               'Nhóm đã chuyển đổi thành công từ module native sang nền tảng Flutter đa nền tảng kết hợp Firebase (Firestore NoSQL, Firebase Auth, Firebase Storage, Rules). '
                               'Quyết định này giải quyết dứt điểm lỗi build máy ảnh quét QR, rút ngắn thời gian lập trình, phục hồi chỉ số SPI từ 0.87 về 1.00 và đảm bảo tiến độ bàn giao đúng ngày 27/11/2026.',
-                              style: TextStyle(fontSize: 12, color: AppColors.textSecondary, height: 1.4),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                                height: 1.4,
+                              ),
                             ),
                           ],
                         ),
@@ -526,14 +745,24 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                ),
+              ),
               Icon(icon, size: 18, color: color),
             ],
           ),
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
         ],
       ),
@@ -558,9 +787,19 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 11),
+        ),
         const SizedBox(height: 2),
-        Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
       ],
     );
   }
@@ -572,13 +811,23 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-            Text(description, style: const TextStyle(fontSize: 10, color: AppColors.textMuted)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              description,
+              style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+            ),
           ],
         ),
         Text(
           value,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.primary),
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
         ),
       ],
     );

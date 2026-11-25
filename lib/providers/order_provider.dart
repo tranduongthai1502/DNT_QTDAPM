@@ -53,6 +53,7 @@ class OrderProvider extends ChangeNotifier {
     required double finalAmount,
     required PaymentMethod paymentMethod,
     bool isPaid = false,
+    String deliveryPartner = 'AhaMove Xe Lạnh Chuẩn 18°C',
   }) async {
     final now = DateTime.now();
     final dateStr = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
@@ -75,7 +76,7 @@ class OrderProvider extends ChangeNotifier {
       status: OrderStatus.pending,
       createdAt: now,
       deliveryTrackingCode: 'COLD-FF-$randomSuffix',
-      deliveryPartner: 'AhaMove Xe Lạnh Chuẩn 18°C',
+      deliveryPartner: deliveryPartner,
     );
 
     _orders.insert(0, newOrder);

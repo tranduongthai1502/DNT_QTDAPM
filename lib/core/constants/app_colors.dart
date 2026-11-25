@@ -9,9 +9,11 @@ class AppColors {
   static const Color accent = Color(0xFFFFA000); // Ripe Harvest Amber
 
   // Background & Surface
-  static const Color background = Color(0xFFF4F6F4); // Very soft mint/gray
+  static const Color background = Color(0xFFF6F6F0); // Warm editorial ivory-sage
   static const Color surface = Colors.white;
   static const Color surfaceVariant = Color(0xFFE8F5E9); // Mint highlight
+  static const Color warmCream = Color(0xFFFFF5DC); // Warm harvest cream
+  static const Color softBorder = Color(0xFFE5E8DF); // Crisp warm card hairline
 
   // Text Colors
   static const Color textPrimary = Color(0xFF1C2826);
