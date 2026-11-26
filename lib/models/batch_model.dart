@@ -42,6 +42,7 @@ class BatchModel {
   final String id; // e.g. BATCH-DL-2026-01
   final String productId;
   final String productName;
+  final String imageUrl;
   final String farmId;
   final String farmName;
   final String farmLocation;
@@ -59,6 +60,7 @@ class BatchModel {
     required this.id,
     required this.productId,
     required this.productName,
+    this.imageUrl = '',
     required this.farmId,
     required this.farmName,
     required this.farmLocation,
@@ -78,6 +80,7 @@ class BatchModel {
       'id': id,
       'productId': productId,
       'productName': productName,
+      'imageUrl': imageUrl,
       'farmId': farmId,
       'farmName': farmName,
       'farmLocation': farmLocation,
@@ -98,6 +101,7 @@ class BatchModel {
       id: map['id'] ?? '',
       productId: map['productId'] ?? '',
       productName: map['productName'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
       farmId: map['farmId'] ?? '',
       farmName: map['farmName'] ?? '',
       farmLocation: map['farmLocation'] ?? '',
@@ -109,11 +113,14 @@ class BatchModel {
       inspectorName: map['inspectorName'] ?? '',
       testResults: map['testResults'] ?? '',
       totalYieldKg: (map['totalYieldKg'] as num?)?.toInt() ?? 500,
-      timeline: (map['timeline'] as List<dynamic>?)
-              ?.map((item) => TimelineStepModel.fromMap(item as Map<String, dynamic>))
+      timeline:
+          (map['timeline'] as List<dynamic>?)
+              ?.map(
+                (item) =>
+                    TimelineStepModel.fromMap(item as Map<String, dynamic>),
+              )
               .toList() ??
           [],
     );
   }
 }
-

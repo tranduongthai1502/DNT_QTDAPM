@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -107,7 +108,9 @@ class FirebaseService {
         contentType = isPng ? 'image/png' : 'image/jpeg';
       } else {
         final response = await http.get(Uri.parse(imageUrl));
-        if (response.statusCode < 200 || response.statusCode >= 300) return null;
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          return null;
+        }
         bytes = response.bodyBytes;
         extension = imageUrl.toLowerCase().contains('.png') ? 'png' : 'jpg';
         contentType = response.headers['content-type'] ?? 'image/jpeg';
@@ -126,6 +129,28 @@ class FirebaseService {
       return await reference.getDownloadURL();
     } catch (e) {
       if (kDebugMode) print('Firebase Storage image upload error: $e');
+      return null;
+    }
+  }
+
+  static Future<String?> uploadImageBytes({
+    required String storagePath,
+    required Uint8List bytes,
+    String contentType = 'image/jpeg',
+  }) async {
+    if (!_isInitialized || bytes.isEmpty) return null;
+    try {
+      final reference = FirebaseStorage.instance.ref(storagePath);
+      await reference.putData(
+        bytes,
+        SettableMetadata(
+          contentType: contentType,
+          cacheControl: 'public,max-age=86400',
+        ),
+      );
+      return await reference.getDownloadURL();
+    } catch (e) {
+      if (kDebugMode) print('Firebase Storage local image upload error: $e');
       return null;
     }
   }
